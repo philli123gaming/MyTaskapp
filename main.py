@@ -1,3 +1,6 @@
+import sys
+
+
 class Task:
     def __init__(self, name, description):
         self.name = name
@@ -18,8 +21,9 @@ class Todolist:
         if len(self.tasks) < 1:
             print("There are no tasks to delete")
         else:
-            for i, task in enumerate(self.tasks, 1):
-                print(f"{i}. {task.name} - {task.description} - {'Completed' if task.completed else 'Not Completed'}")
+            return [(task.name, task.description, task.completed) for task in self.tasks]
+            #for i, task in enumerate(self.tasks, 1):
+                #print(f"{i}. {task.name} - {task.description} - {'Completed' if task.completed else 'Not Completed'}")
 
     # Mark Task as Completed: Users can mark tasks as completed.
     def mark_completed(self, task_index):
@@ -34,21 +38,68 @@ class Todolist:
     def remove_task(self, task_index):
         self.tasks.pop(task_index - 1)
 
+def main():
+    todo_list = Todolist()
+
+    while True:
+        print("\n1. Add Task")
+        print("2. View Tasks")
+        print("3. Mark Task as Completed")
+        print("4. Remove Task")
+        print("5. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            name = input("Enter task name: ")
+            description = input("Enter task description: ")
+            task = Task(name, description)
+            todo_list.add_task(task)
+            print("Task added.")
+
+        elif choice == "2":
+            tasks = todo_list.view_tasks()
+            if not tasks:
+                print("No tasks.")
+            else:
+                for i, task in enumerate(tasks, 1):
+                    name, description, completed = task
+                    print(f"{i}. {name} - {description} - {'Completed' if completed else 'Not Completed'}")
+
+        elif choice == "3":
+            tasks = todo_list.view_tasks()
+            if not tasks:
+                print("No tasks to mark.")
+            else:
+                for i, task in enumerate(tasks, 1):
+                    name, description, completed = task
+                    print(f"{i}. {name} - {description} - {'Completed' if completed else 'Not Completed'}")
+                task_index = int(input("Enter the index of the task to mark as completed: "))
+                todo_list.mark_completed(task_index)
+
+        elif choice == "4":
+            tasks = todo_list.view_tasks()
+            if not tasks:
+                print("No tasks to remove.")
+            else:
+                for i, task in enumerate(tasks, 1):
+                    name, description, completed = task
+                    print(f"{i}. {name} - {description} - {'Completed' if completed else 'Not Completed'}")
+                task_index = int(input("Enter the index of the task to remove: "))
+                todo_list.remove_task(task_index)
+
+        elif choice == "5":
+            print("Exiting...")
+            sys.exit()
+
+        else:
+            print("Invalid choice. Please try again.")
 
 
+if __name__ == "__main__":
+    main()
 
-mytodolist = Todolist()
 
-task1 = Task("wash dishes", "self explanatory really")
-mytodolist.add_task(task1)
-mytodolist.view_tasks()
-
-mytodolist.mark_completed(1)
-
-mytodolist.view_tasks()
-
-mytodolist.remove_task(1)
-mytodolist.view_tasks()
 
 
 
