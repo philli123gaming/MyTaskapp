@@ -38,6 +38,18 @@ class Todolist:
     def remove_task(self, task_index):
         self.tasks.pop(task_index - 1)
 
+    def remove_completed_tasks(self):
+        respone = input("Are you sure"
+                        "\n1. Yes"
+                        "\n2. No")
+        if respone == "1":
+            if not self.tasks:
+                print("No tasks.")
+            else:
+                self.tasks = [task for task in self.tasks if not task.completed]
+                print("Completed tasks have been removed")
+
+
 def main():
     todo_list = Todolist()
 
@@ -46,6 +58,7 @@ def main():
         print("2. View Tasks")
         print("3. Mark Task as Completed")
         print("4. Remove Task")
+        print("6. Remove completed Task")
         print("5. Exit")
 
         choice = input("Enter your choice: ")
@@ -88,9 +101,13 @@ def main():
                 task_index = int(input("Enter the index of the task to remove: "))
                 todo_list.remove_task(task_index)
 
+
         elif choice == "5":
             print("Exiting...")
             sys.exit()
+
+        elif choice == "6":
+            todo_list.remove_completed_tasks()
 
         else:
             print("Invalid choice. Please try again.")

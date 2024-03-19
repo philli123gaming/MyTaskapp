@@ -8,10 +8,10 @@ Create a command-line to-do list application using Python. This application will
 
 Features:
 
-Add Task: Users can add tasks to their to-do list.
-View Tasks: Users can view all tasks currently on their to-do list.
-Mark Task as Completed: Users can mark tasks as completed.
-Remove Task: Users can remove tasks from their to-do list.
+Add Task: Users can add tasks to their to-do list. - done
+View Tasks: Users can view all tasks currently on their to-do list. - done
+Mark Task as Completed: Users can mark tasks as completed. - done
+Remove Task: Users can remove tasks from their to-do list. - done
 Implementation:
 You can implement this project using Python's basic data structures like lists or dictionaries.
 
@@ -19,6 +19,7 @@ I got the project idea from gpt I want to try doing more projects
 
 to improve I want to add a function that 
 wipes all completed tasks
+undo option
 User Input Validation: Implement input validation to ensure that users provide valid inputs when adding, marking, or removing tasks.
 
 Save/Load Tasks: Add functionality to save tasks to a file when the program exits and load them back when the program starts again. This can be achieved using file I/O operations.
