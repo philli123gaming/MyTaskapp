@@ -2,10 +2,10 @@ import sys
 
 
 class Task:
-    def __init__(self, name, description, priority=2):
+    def __init__(self, name, description, priority=2, completed=False):
         self.name = name
         self.description = description
-        self.completed = False
+        self.completed = completed
         self.priority = priority
 
 
@@ -14,22 +14,25 @@ class Todolist:
         self.tasks = []
 
     # Add Task: Users can add tasks to their to-do list.
-    def add_task(self, task):
-        self.tasks.append(task)
+    def add_task(self, task, index=0):
+        if index:
+            self.tasks.insert(index, task)
+        else:
+            self.tasks.append(task)
 
     # View Tasks: Users can view all tasks currently on their to-do list.
     def view_tasks(self):
         if len(self.tasks) < 1:
-            print("There are no tasks to delete")
+            print("There are no tasks to view")
         else:
             sorted_tasks = sorted(self.tasks, key=lambda x: x.priority)
             return [(task.name, task.description, task.completed, task.priority) for task in sorted_tasks]
-            #for i, task in enumerate(self.tasks, 1):
-                #print(f"{i}. {task.name} - {task.description} - {'Completed' if task.completed else 'Not Completed'}")
+            # for i, task in enumerate(self.tasks, 1):
+            # print(f"{i}. {task.name} - {task.description} - {'Completed' if task.completed else 'Not Completed'}")
 
     # Mark Task as Completed: Users can mark tasks as completed.
     def mark_completed(self, task_index):
-        #marks the task as complete by subtracting the given number by one to get the index
+        # marks the task as complete by subtracting the given number by one to get the index
         if task_index >= 1 and task_index <= len(self.tasks):
             if self.tasks[task_index - 1].completed:
                 self.tasks[task_index - 1].completed = False
@@ -45,14 +48,23 @@ class Todolist:
         self.tasks.pop(task_index - 1)
 
     def remove_completed_tasks(self):
-        respone = input("Are you sure"
-                        "\n1. Yes"
-                        "\n2. No")
-        if respone == "1":
+        #respone = input("Are you sure"
+        #                "\n1. Yes"
+         #               "\n2. No")
+        #if respone == "1":
             if not self.tasks:
                 print("No tasks.")
             else:
-                self.tasks = [task for task in self.tasks if not task.completed]
+                # self.tasks = [task for task in enumerate(self.tasks, 1) if not task.completed]
+                updated_tasks = []
+                removed_tasks = []
+                for task in self.tasks:
+                    if not task.completed:
+                        updated_tasks.append(task)
+                    else:
+                        removed_tasks.append([task.name, task.description, task.completed, task.priority])
+                self.tasks = updated_tasks
+                return removed_tasks
 
     def edit_task(self, choice1, choice2):
         if choice2 == "1":
@@ -69,15 +81,30 @@ class Todolist:
         if property == "Name":
             self.tasks[choice1 - 1].name = input(f"please input what you want to change the {property} to")
         elif property == "Description":
-            self.tasks[choice1-1].description = input(f"please input what you want to change the {property}")
+            self.tasks[choice1 - 1].description = input(f"please input what you want to change the {property}")
         elif property == "Priority":
             response = int(input(
-                    f"please input what you want to change the {property} to: \nHigh - 1\nMedium - 2\nLow - 3\n"))
-            if response in range(1,4):
+                f"please input what you want to change the {property} to: \nHigh - 1\nMedium - 2\nLow - 3\n"))
+            if response in range(1, 4):
                 self.tasks[choice1 - 1].priority = response
         print("Reocrd edited")
 
-            
+    def undo_action(self, last_action):
+        if last_action[0]['action'] == "Remove task":
+            task = Task(last_action[1][0], last_action[1][1], priority=last_action[1][3],
+                        completed=last_action[1][2])
+            self.add_task(task, last_action[2])
+            print("Time rewinded")
+        elif last_action[0]['action'] == "Remove tasks":
+            for task in last_action[1]:
+                task = Task(task[0], task[1], priority=task[3],
+                            completed=task[2])
+                self.add_task(task)
+                print("Time rewinded")
+
+        else:
+            print("Time not rewinded")
+
 
 def view_tasks(tasks):
     for i, task in enumerate(tasks, 1):
@@ -90,9 +117,10 @@ def view_tasks(tasks):
             priority = "Low"
         print(f"{i}. {name} - {description} - {'Completed' if completed else 'Not Completed'} - {priority}")
 
+
 def main():
     todo_list = Todolist()
-    History = []
+    history = []
 
     while True:
         print("\n1. Add Task")
@@ -103,8 +131,6 @@ def main():
         print("5. Exit")
         print("7. Edit tasks")
         print("8. Undo Action")
-
-
 
         choice = input("Enter your choice: ")
 
@@ -118,7 +144,7 @@ def main():
 
             if not priority == "":
                 try:
-                    if int(priority) not in range(1,4):
+                    if int(priority) not in range(1, 4):
                         print("not applicable priority number setting at default")
                         priority = 2
                 except ValueError:
@@ -127,11 +153,6 @@ def main():
             else:
                 print("not applicable priority number setting at default")
                 priority = 2
-
-
-
-
-
 
             task = Task(name, description, priority=int(priority))
             todo_list.add_task(task)
@@ -161,6 +182,7 @@ def main():
                 view_tasks(tasks)
                 task_index = int(input("Enter the index of the task to remove: "))
                 todo_list.remove_task(task_index)
+                history = [{"action": "Remove task"}, tasks[task_index - 1], (int(task_index) - 1)]
 
 
         elif choice == "5":
@@ -168,8 +190,10 @@ def main():
             sys.exit()
 
         elif choice == "6":
-            todo_list.remove_completed_tasks()
+            history = [{"action": "Remove tasks"}, todo_list.remove_completed_tasks()]
             print("Completed tasks have been removed")
+
+            # history.append(                [{"action": "Remove tasks"}, tasks[task_index - 1], (int(task_index) - 1)]            )
 
         elif choice == "7":
             tasks = todo_list.view_tasks()
@@ -178,24 +202,34 @@ def main():
             else:
                 view_tasks(tasks)
                 choice1 = int(input("\nwhich task would you like to edit "))
-                if choice1 not in range(len(tasks)+1):
+                if choice1 not in range(len(tasks) + 1):
                     print("Can't find a task for that number view tasks")
                 else:
                     print(tasks[int(choice1) - 1])
                     choice2 = input("What would you like to change"
-                            " \nName = 1"
-                             "\nDescription = 2"
-                             "\nIs it completed = 3"
-                            "\nPriority = 4\n")
+                                    " \nName = 1"
+                                    "\nDescription = 2"
+                                    "\nIs it completed = 3"
+                                    "\nPriority = 4\n")
                     todo_list.edit_task(choice1, choice2)
+
+        elif choice == "8":
+            if not history:
+                print("No recent tasks to Undo")
+            else:
+                todo_list.undo_action(history)
+                history = []
+
+
+
+        # if there aren't any say it
+        # grab the last acction done
+
+        # use the last action done only to reverse changes
+        # some other functions need to be able to record history
         else:
             print("Invalid choice. Please try again.")
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
