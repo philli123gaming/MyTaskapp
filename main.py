@@ -2,11 +2,12 @@ import sys
 
 
 class Task:
-    def __init__(self, name, description, priority=2, completed=False):
+    def __init__(self, name, description, priority=2, completed=False, catergories=[]):
         self.name = name
         self.description = description
         self.completed = completed
         self.priority = priority
+        self.catergories = catergories
 
 
 class Todolist:
@@ -19,14 +20,17 @@ class Todolist:
             self.tasks.insert(index, task)
         else:
             self.tasks.append(task)
-
+        self.tasks = sorted(self.tasks, key=lambda x: x.priority)
     # View Tasks: Users can view all tasks currently on their to-do list.
-    def view_tasks(self):
+    def view_tasks(self, filter=None):
         if len(self.tasks) < 1:
             print("There are no tasks to view")
         else:
-            sorted_tasks = sorted(self.tasks, key=lambda x: x.priority)
-            return [(task.name, task.description, task.completed, task.priority) for task in sorted_tasks]
+            if filter:
+                return [(task.name, task.description, task.completed, task.priority, task.catergories) for task in self.tasks if filter in task.catergories]
+            else:
+                return [(task.name, task.description, task.completed, task.priority, task.catergories) for task in
+                        self.tasks]
             # for i, task in enumerate(self.tasks, 1):
             # print(f"{i}. {task.name} - {task.description} - {'Completed' if task.completed else 'Not Completed'}")
 
@@ -75,8 +79,10 @@ class Todolist:
             property = "completed"
         elif choice2 == "4":
             property = "Priority"
+        elif choice2 == "5":
+            property = "Catergories"
         else:
-            print("not a changable property")
+            print("not a changeable property")
 
         if property == "Name":
             self.tasks[choice1 - 1].name = input(f"please input what you want to change the {property} to")
@@ -87,6 +93,10 @@ class Todolist:
                 f"please input what you want to change the {property} to: \nHigh - 1\nMedium - 2\nLow - 3\n"))
             if response in range(1, 4):
                 self.tasks[choice1 - 1].priority = response
+        elif property == "Catergories":
+            if self.tasks[choice1 - 1].catergories:
+                print(self.tasks[choice1 - 1].catergories)
+                print("These are the catergories you can edit")
         print("Reocrd edited")
 
     def undo_action(self, last_action):
@@ -108,14 +118,14 @@ class Todolist:
 
 def view_tasks(tasks):
     for i, task in enumerate(tasks, 1):
-        name, description, completed, priority = task
+        name, description, completed, priority, catergories = task
         if priority == 1:
             priority = "High"
         elif priority == 2:
             priority = "Medium"
         elif priority == 3:
             priority = "Low"
-        print(f"{i}. {name} - {description} - {'Completed' if completed else 'Not Completed'} - {priority}")
+        print(f"{i}. {name} - {description} - Status: {'Completed' if completed else 'Not Completed'} - Priority: {priority} - catergories: {catergories}")
 
 
 def main():
@@ -141,6 +151,16 @@ def main():
                              "\nHigh = 1"
                              "\nMedium = 2"
                              "\nLow = 3\n")
+            catergories = []
+            response = input("are there any categories you would like to add")
+            if response.lower() == "yes":
+                while True:
+                    catergories.append(input("Write your catergory now"))
+                    response = input("Do you want to add another one")
+                    if response.lower() == "yes":
+                        continue
+                    else:
+                        break
 
             if not priority == "":
                 try:
@@ -154,12 +174,20 @@ def main():
                 print("not applicable priority number setting at default")
                 priority = 2
 
-            task = Task(name, description, priority=int(priority))
+            task = Task(name, description, priority=int(priority), catergories=catergories)
             todo_list.add_task(task)
             print("Task added.")
 
         elif choice == "2":
-            tasks = todo_list.view_tasks()
+            response = input("is there a filter you would like to add")
+            if response.lower() == "yes":
+                filter = (input("Write your filter now"))
+                tasks = todo_list.view_tasks(filter)
+            else:
+                tasks = todo_list.view_tasks()
+
+
+
             if not tasks:
                 print("No tasks.")
             else:
@@ -210,7 +238,8 @@ def main():
                                     " \nName = 1"
                                     "\nDescription = 2"
                                     "\nIs it completed = 3"
-                                    "\nPriority = 4\n")
+                                    "\nPriority = 4"
+                                    "\nCatergories = 5")
                     todo_list.edit_task(choice1, choice2)
 
         elif choice == "8":
@@ -219,8 +248,6 @@ def main():
             else:
                 todo_list.undo_action(history)
                 history = []
-
-
 
         # if there aren't any say it
         # grab the last acction done
