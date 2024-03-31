@@ -1,17 +1,16 @@
 import sys
 
-import os
-import traceback
 from tkinter import *
 from tkinter import filedialog
 
+
 class Task:
-    def __init__(self, name, description, priority=2, completed=False, catergories=[]):
+    def __init__(self, name, description, priority=2, completed=False, categories=[]):
         self.name = name
         self.description = description
         self.completed = completed
         self.priority = priority
-        self.catergories = catergories
+        self.categories = categories
 
     def __repr__(self):
         if self.priority == 1:
@@ -20,7 +19,9 @@ class Task:
             p_word = "Medium"
         elif self.priority == 3:
             p_word = "Low"
-        return f"Task (Name: {self.name} - Description: {self.description} - Status: "+("completed" if self.completed else "Not completed ")+f" - Priority: {self.priority} ({p_word}) - Categories: {self.catergories})"
+        return f"Task (Name: {self.name} - Description: {self.description} - Status: " + (
+            "completed" if self.completed else "Not completed ") + f' - Priority: {self.priority} ({p_word}) - Categories: {self.categories})'
+
 
 class Todolist:
     def __init__(self, name=None):
@@ -41,9 +42,10 @@ class Todolist:
             print("There are no tasks to view")
         else:
             if filter:
-                return [(task.name, task.description, task.completed, task.priority, task.catergories) for task in self.tasks if filter in task.catergories]
+                return [(task.name, task.description, task.completed, task.priority, task.categories) for task in
+                        self.tasks if filter in task.categories]
             else:
-                return [(task.name, task.description, task.completed, task.priority, task.catergories) for task in
+                return [(task.name, task.description, task.completed, task.priority, task.categories) for task in
                         self.tasks]
             # for i, task in enumerate(self.tasks, 1):
             # print(f"{i}. {task.name} - {task.description} - {'Completed' if task.completed else 'Not Completed'}")
@@ -66,23 +68,19 @@ class Todolist:
         self.tasks.pop(task_index - 1)
 
     def remove_completed_tasks(self):
-        #respone = input("Are you sure"
-        #                "\n1. Yes"
-         #               "\n2. No")
-        #if respone == "1":
-            if not self.tasks:
-                print("No tasks.")
-            else:
-                # self.tasks = [task for task in enumerate(self.tasks, 1) if not task.completed]
-                updated_tasks = []
-                removed_tasks = []
-                for task in self.tasks:
-                    if not task.completed:
-                        updated_tasks.append(task)
-                    else:
-                        removed_tasks.append([task.name, task.description, task.completed, task.priority])
-                self.tasks = updated_tasks
-                return removed_tasks
+        updated_tasks = []
+        removed_tasks = []
+        if not self.tasks:
+            print("No tasks.")
+        else:
+            # self.tasks = [task for task in enumerate(self.tasks, 1) if not task.completed]
+            for task in self.tasks:
+                if task.completed:
+                    removed_tasks.append(task)
+                else:
+                    updated_tasks.append(task)
+            self.tasks = updated_tasks
+            return removed_tasks
 
     def edit_task(self, choice1, choice2):
         if choice2 == "1":
@@ -94,7 +92,7 @@ class Todolist:
         elif choice2 == "4":
             property = "Priority"
         elif choice2 == "5":
-            property = "Catergories"
+            property = "Categories"
         else:
             print("not a changeable property")
 
@@ -107,50 +105,52 @@ class Todolist:
                 f"please input what you want to change the {property} to: \nHigh - 1\nMedium - 2\nLow - 3\n"))
             if response in range(1, 4):
                 self.tasks[choice1 - 1].priority = response
-        elif property == "Catergories":
-            if self.tasks[choice1 - 1].catergories:
-                print(self.tasks[choice1 - 1].catergories)
-                print("These are the catergories you can edit")
-        print("Reocrd edited")
+        elif property == "Categories":
+            if self.tasks[choice1 - 1].categories:
+                print(self.tasks[choice1 - 1].categories)
+                print("These are the categories you can edit")
+        print("Record edited")
 
     def undo_action(self, last_action):
         if last_action[0]['action'] == "Remove task":
-            task = Task(last_action[1][0], last_action[1][1], priority=last_action[1][3],
-                        completed=last_action[1][2])
+            task = Task(name=last_action[1].name, description=last_action[1].description,
+                        priority=last_action[1].priority,
+                        completed=last_action[1].completed, categories=last_action[1].categories)
             self.add_task(task, last_action[2])
             print("Time rewinded")
         elif last_action[0]['action'] == "Remove tasks":
             for task in last_action[1]:
-                task = Task(task[0], task[1], priority=task[3],
-                            completed=task[2])
+                task = Task(task.name, task.description, priority=task.priority,
+                            completed=task.completed, categories=task.categories)
                 self.add_task(task)
                 print("Time rewinded")
-
         else:
             print("Time not rewinded")
 
+
 def view_tasks(tasks):
     for i, task in enumerate(tasks, 1):
-        name, description, completed, priority, catergories = task
+        name, description, completed, priority, categories = task
         if priority == 1:
             priority = "High"
         elif priority == 2:
             priority = "Medium"
         elif priority == 3:
             priority = "Low"
-        print(f"{i}. {name} - {description} - Status: {'Completed' if completed else 'Not Completed'} - Priority: {priority} - catergories: {catergories}")
-
+        print(
+            f"{i}. {name} - {description} - Status: {'Completed' if completed else 'Not Completed'} - Priority: {priority} - categories: {categories}")
 
 
 def write_tasks_to_file(tasks, todolistname):
     with open(todolistname, 'w') as file:
         for task in tasks:
-            file.write(f"{task.name},{task.description},{task.completed},{task.priority},{task.catergories}\n")
+            file.write(f"{task.name},{task.description},{task.completed},{task.priority},{task.categories}\n")
+
 
 tasks = []
 
-def read_tasks_from_file(file_path):
 
+def read_tasks_from_file(file_path):
     new_tasks = []
     with open(file_path, 'r') as file:
         for line in file:
@@ -166,17 +166,19 @@ def read_tasks_from_file(file_path):
             # Strip whitespace from each item and create the list
             categories = [category.strip() for category in categories]
 
-            task = Task(task_name, description, completed= completed, priority=int(priority), catergories=categories)
+            task = Task(task_name, description, completed=completed, priority=int(priority), categories=categories)
             new_tasks.append(task)
 
         return new_tasks
 
+
 def open_folder():
-    global tasks, dirwindow, todo_list_name
+    global tasks, dirwindow
     filepath = filedialog.askopenfilename(initialdir="C:\Documents", title="Open a Text File")
     todo_list_name = filepath.split("/")[-1]
     tasks = read_tasks_from_file(filepath)
     dirwindow.destroy()
+
 
 def main():
     global tasks, dirwindow, todo_list_name
@@ -184,6 +186,7 @@ def main():
         print("Main Menu")
         print("1. Load to do list")
         print("2. Start from scratch")
+        print("0. Close app")
 
         choice = input("Enter your choice: ")
 
@@ -196,7 +199,8 @@ def main():
             dirwindow.geometry("700x300")
 
             # Create a label
-            Label(dirwindow, text="Click the button to select your task file (it should be a csv file)", font='Arial 16 bold').pack(pady=15)
+            Label(dirwindow, text="Click the button to select your task file (it should be a csv file)",
+                  font='Arial 16 bold').pack(pady=15)
 
             # change back to just C:/ for late
 
@@ -212,33 +216,40 @@ def main():
 
         elif choice == "2":
             todo_list = Todolist()
-            1
+
+        elif choice == "0":
+            sys.exit()
+
+        else:
+            print("Invalid Choice")
+            continue
+
         while True:
             print("\n1. Add Task")
             print("2. View Tasks")
-            print("3. Mark Task as Completed / Incomplete")
-            print("4. Remove Task")
-            print("6. Remove completed Task")
-            print("5. Exit")
-            print("7. Edit tasks")
-            print("8. Undo Action")
-            print("9. Save List")
-            print("0. Back to Main Menu")
-
+            print("3. Edit tasks")
+            print("4. Mark Task as Completed / Incomplete")
+            print("5. Remove Task")
+            print("6. Remove completed Tasks")
+            print("7. Undo Action")
+            print("8. Save List")
+            print("9. Back to Main Menu")
+            print("0. Exit")
             choice = input("Enter your choice: ")
 
             if choice == "1":
                 name = input("Enter task name: ")
+                if name == "":  name = "untitled"
                 description = input("Enter task description: ")
                 priority = input("What priority is it "
                                  "\nHigh = 1"
                                  "\nMedium = 2"
                                  "\nLow = 3\n")
-                catergories = []
+                categories = []
                 response = input("are there any categories you would like to add\n")
                 if response.lower() == "yes":
                     while True:
-                        catergories.append(input("Write your catergory now"))
+                        categories.append(input("Write your category now"))
                         response = input("Do you want to add another one: ")
                         if response.lower() == "yes":
                             continue
@@ -257,7 +268,7 @@ def main():
                     print("not applicable priority number setting at default")
                     priority = 2
 
-                task = Task(name, description, priority=int(priority), catergories=catergories)
+                task = Task(name, description, priority=int(priority), categories=categories)
 
                 todo_list.add_task(task)
                 print("Task added.")
@@ -270,43 +281,12 @@ def main():
                 else:
                     tasks = todo_list.view_tasks()
 
-
-
                 if not tasks:
                     print("No tasks.")
                 else:
                     view_tasks(tasks)
 
             elif choice == "3":
-                tasks = todo_list.view_tasks()
-                if not tasks:
-                    print("No tasks to mark.")
-                else:
-                    view_tasks(tasks)
-                    task_index = int(input("Enter the index of the task to mark as completed: "))
-                    todo_list.mark_completed(task_index)
-
-            elif choice == "4":
-                tasks = todo_list.view_tasks()
-                if not tasks:
-                    print("No tasks to remove.")
-                else:
-                    view_tasks(tasks)
-                    task_index = int(input("Enter the index of the task to remove: "))
-                    todo_list.remove_task(task_index)
-                    history = [{"action": "Remove task"}, tasks[task_index - 1], (int(task_index) - 1)]
-
-            elif choice == "5":
-                print("Exiting...")
-                sys.exit()
-
-            elif choice == "6":
-                history = [{"action": "Remove tasks"}, todo_list.remove_completed_tasks()]
-                print("Completed tasks have been removed")
-
-                # history.append(                [{"action": "Remove tasks"}, tasks[task_index - 1], (int(task_index) - 1)]            )
-
-            elif choice == "7":
                 tasks = todo_list.view_tasks()
                 if not tasks:
                     print("No tasks to edit.")
@@ -322,10 +302,33 @@ def main():
                                         "\nDescription = 2"
                                         "\nIs it completed = 3"
                                         "\nPriority = 4"
-                                        "\nCatergories = 5")
+                                        "\nCategories = 5")
                         todo_list.edit_task(choice1, choice2)
 
-            elif choice == "8":
+            elif choice == "4":
+                tasks = todo_list.view_tasks()
+                if not tasks:
+                    print("No tasks to mark.")
+                else:
+                    view_tasks(tasks)
+                    task_index = int(input("Enter the index of the task to mark as completed: "))
+                    todo_list.mark_completed(task_index)
+
+            elif choice == "5":
+                tasks = todo_list.view_tasks()
+                if not tasks:
+                    print("No tasks to remove.")
+                else:
+                    view_tasks(tasks)
+                    task_index = int(input("Enter the index of the task to remove: "))
+                    todo_list.remove_task(task_index)
+                    history = [{"action": "Remove task"}, tasks[task_index - 1], (int(task_index) - 1)]
+
+            elif choice == "6":
+                history = [{"action": "Remove tasks"}, todo_list.remove_completed_tasks()]
+                print("Completed tasks have been removed")
+
+            elif choice == "7":
                 if not history:
                     print("No recent tasks to Undo")
                 else:
@@ -333,22 +336,22 @@ def main():
                     history = []
 
             # if there aren't any say it
-            # grab the last acction done
+            # grabs the last action done
 
             # use the last action done only to reverse changes
             # some other functions need to be able to record history
 
-            elif choice == "9":
+            elif choice == "8":
 
                 if not todo_list.name:
                     name = input("What would you like to name your list?\n")
                 else:
-                    response = input(f"I see this list is already named {todo_list.name} would you like to to override? ")
+                    response = input(
+                        f"I see this list is already named {todo_list.name} would you like to to override? ")
                     if response.lower().strip() == "yes":
                         todo_list.name = input("please write what you would like the new list name to be")
                     elif response.lower().strip() == "no":
                         print(f"{todo_list_name} it is")
-
 
                 response = input("Are you sure you want to save"
                                  "yes no or exit\n")
@@ -359,10 +362,13 @@ def main():
                 else:
                     continue
 
-            elif choice == "0":
+            elif choice == "9":
                 print("Back to the Main menu")
                 break
 
+            elif choice == "0":
+                print("Exiting...")
+                sys.exit()
             else:
                 print("Invalid choice. Please try again.")
 

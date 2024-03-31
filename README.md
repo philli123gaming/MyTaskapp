@@ -23,37 +23,33 @@ make so that the mark task as complete module also does the reverse completed - 
 Undo/Redo Functionality: Implement undo and redo functionality to allow users to revert their actions. - too way tooo long  for the delete tasks but - done
 Task Categories: Allow users to categorize tasks (e.g., work, personal, shopping) - done
 and implement features to filter tasks based on categories. - should be easy - done
+Save/Load Tasks: Add functionality to save tasks to a file when the program exits and load them back when the program starts again. This can be achieved using file I/O operations. - done
+(did use my background loader code for this)
+
 
 to improve I want to add: 
-Save/Load Tasks: Add functionality to save tasks to a file when the program exits and load them back when the program starts again. This can be achieved using file I/O operations.
-(could use my background loader code for this)
-fix the completed tasks so that only task object are used no more turning into strings and back
+
+add comments and make code more understandable - next
 need to control where files get saved maybe even a initial directory saved into the program
-add close app into main menu
 add more context options such as view tasks branching out into all and with fileter or delte tasks branching into delete singular and all completed or even the option to complete multiple tasks at once
 maybe a recent tasks option
 
+AUTOSAVE
 
-redoing the scripts so options are in order
-add comments and make code more understandable
+
 too far away
 
 
 
 
-
-AUTOSAVE
-a main menu and the ability to switch between multiple lists
-
-
 GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience.
 Due Dates: Introduce due dates for tasks and implement features to remind users of upcoming deadlines.
-add various to do lists and to switch between them
+
 <h2>could be linked</h2>
 User Accounts: Implement user authentication and allow multiple users to maintain separate to-do lists.
 
 
-
-Data Visualization: Provide visualizations of task completion statistics over time (e.g., using graphs or charts). - don't care
-
 I fully want to clarify that I used gpt to get this idea with it acting an assistant to me in this project 
+
+problems:
+can make empty strings using tasks with no description
