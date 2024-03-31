@@ -20,21 +20,27 @@ Task Priority: Allow users to assign priorities to tasks (e.g., high, medium, lo
 User Input Validation: Implement input validation to ensure that users provide valid inputs when adding, marking, or removing tasks. - sorta done
 Task Description Editing: Enable users to edit task details after they've been added to the list. - done
 make so that the mark task as complete module also does the reverse completed - done
-Undo/Redo Functionality: Implement undo and redo functionality to allow users to revert their actions. - too wayyy tooo long  for the delete tasks but - done
+Undo/Redo Functionality: Implement undo and redo functionality to allow users to revert their actions. - too way tooo long  for the delete tasks but - done
 Task Categories: Allow users to categorize tasks (e.g., work, personal, shopping) - done
 and implement features to filter tasks based on categories. - should be easy - done
 
 to improve I want to add: 
-
-
-too far away
-
 Save/Load Tasks: Add functionality to save tasks to a file when the program exits and load them back when the program starts again. This can be achieved using file I/O operations.
 (could use my background loader code for this)
+fix the completed tasks so that only task object are used no more turning into strings and back
+need to control where files get saved maybe even a initial directory saved into the program
+add close app into main menu
+add more context options such as view tasks branching out into all and with fileter or delte tasks branching into delete singular and all completed or even the option to complete multiple tasks at once
+maybe a recent tasks option
 
 
 redoing the scripts so options are in order
 add comments and make code more understandable
+too far away
+
+
+
+
 
 AUTOSAVE
 a main menu and the ability to switch between multiple lists
