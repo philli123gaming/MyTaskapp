@@ -26,23 +26,23 @@ and implement features to filter tasks based on categories. - should be easy - d
 Save/Load Tasks: Add functionality to save tasks to a file when the program exits and load them back when the program starts again. This can be achieved using file I/O operations. - done
 (did use my background loader code for this)
 
-
 to improve I want to add: 
 
+next plans
 add comments and make code more understandable - next
+GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience. (probably using a markup language could be time to learn react or master sass)
+AUTOSAVE
+
+I plan on learning tktinker next probably C to make my work an application and sass 
+will also work on a little blog or posts or letter talking about this project as its been awesome despite the nature of the project
+
+misc features
 need to control where files get saved maybe even a initial directory saved into the program
 add more context options such as view tasks branching out into all and with fileter or delte tasks branching into delete singular and all completed or even the option to complete multiple tasks at once
 maybe a recent tasks option
 
-AUTOSAVE
-
-
 too far away
 
-
-
-
-GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience.
 Due Dates: Introduce due dates for tasks and implement features to remind users of upcoming deadlines.
 
 <h2>could be linked</h2>
