@@ -32,7 +32,7 @@ next plans
 add comments and make code more understandable - next
 GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience. (probably using a markup language could be time to learn react or master sass)
 AUTOSAVE
-
+need to increase the load that gets saved as a file such as todolist name and the task app version number
 I plan on learning tktinker next probably C to make my work an application and sass 
 will also work on a little blog or posts or letter talking about this project as its been awesome despite the nature of the project
 
@@ -52,4 +52,10 @@ User Accounts: Implement user authentication and allow multiple users to maintai
 I fully want to clarify that I used gpt to get this idea with it acting an assistant to me in this project 
 
 problems:
-can make empty strings using tasks with no description
+
+need to only have choices in text such as 
+
+
+task input switches between str and int often
+
+need to make a default place to save notes and a tktinker use to give user choice
