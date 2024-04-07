@@ -55,16 +55,13 @@ class Todolist:
             if filter:
                 filtered_tasks = [task for task in self.tasks if filter in task.categories]
                 for i, task in enumerate(filtered_tasks, 1):
-                    print(f"{i}. {task.name} - {task.description} - Status: {'Completed' if task.completed else 'Not Completed'} - Priority: {task.priority_num_to_word(task.priority)} - categories: {task.categories}")
+                    print(
+                        f"{i}. {task.name} - {task.description} - Status: {'Completed' if task.completed else 'Not Completed'} - Priority: {task.priority_num_to_word(task.priority)} - categories: {task.categories}")
 
             else:
                 for i, task in enumerate(self.tasks, 1):
                     print(
                         f"{i}. {task.name} - {task.description} - Status: {'Completed' if task.completed else 'Not Completed'} - Priority: {task.priority_num_to_word(task.priority)} - categories: {task.categories}")
-
-
-
-
 
             # for i, task in enumerate(self.tasks, 1):
             # print(f"{i}. {task.name} - {task.description} - {'Completed' if task.completed else 'Not Completed'}")
@@ -87,7 +84,6 @@ class Todolist:
         task = self.tasks[index]
         self.tasks.pop(index)
         return task
-
 
     def remove_completed_tasks(self):
         updated_tasks = []
@@ -128,7 +124,8 @@ class Todolist:
                 while True:
                     print(self.tasks[index].categories)
                     print("These are the categories you can edit")
-                    response = input("Your options are to ADD DELETE or EDIT a category What would you like to do? (You can also type exit to abort editing): ")
+                    response = input(
+                        "Your options are to ADD DELETE or EDIT a category What would you like to do? (You can also type exit to abort editing): ")
                     if response.lower().strip() == "add":
                         while True:
                             self.tasks[index].categories.append(input("Write your category now"))
@@ -142,7 +139,8 @@ class Todolist:
                             for i, category in enumerate(self.tasks[index].categories):
                                 print(f"{i}. ,{category}")
                             try:
-                                cat_number = (int(input(f"Enter the number of the task to " + ("delete" if response.lower() == "delete" else "edit") + ": "))-1)
+                                cat_number = (int(input(f"Enter the number of the task to " + (
+                                    "delete" if response.lower() == "delete" else "edit") + ": ")) - 1)
                                 if response.lower() == "edit":
                                     print(self.tasks[index].categories[cat_number])
                                     response = input("please type what you would like to edit it too")
@@ -173,7 +171,6 @@ class Todolist:
         else:
             print("not a changeable property")
 
-
     def undo_action(self, last_action):
         if last_action[0]['action'] == "Remove task":
             task = Task(name=last_action[1].name, description=last_action[1].description,
@@ -190,21 +187,23 @@ class Todolist:
         else:
             print("Time not rewinded")
 
-def write_tasks_to_file(tasks, todolistname):
-    default_file_name = "tasks"  # Default file name
-    file_path = filedialog.asksaveasfilename(initialdir="default_note_save", defaultextension=".txt",
+
+def write_tasks_to_file(tasks, todolistname = "tasks"):
+    # Default file name
+    file_path = filedialog.asksaveasfilename(initialdir="default_note_save",initialfile=todolistname, defaultextension=".txt",
                                              filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
     print("File path selected:", file_path)
     if file_path:
         # Extract the file name from the file path
         file_name = file_path.split("/")[-1]  # Assuming '/' is the path separator
-        print("File name:", file_name)
         with open(file_path, 'w') as file:
             for task in tasks:
-                file.write(f"{task.task_name},{task.priority},{task.completed}\n")
-        print("Tasks saved to:", file_path)
+                file.write(f"{task.name},{task.description},{task.completed},{task.priority},{task.categories}\n")
+        print("Tasks saved to:", file_name)
+
 
 tasks = []
+
 
 def read_tasks_from_file(file_path):
     new_tasks = []
@@ -212,6 +211,25 @@ def read_tasks_from_file(file_path):
         for line in file:
             task_data = line.strip().split(',')
             task_name, description, completed, priority, categories = task_data
+
+            if not task_name:
+                print("a task has no name will name untitled")
+                task_name = "untitled"
+
+            if completed == "True":
+                completed = True
+            elif completed == "False":
+                completed = False
+            else:
+                print("Status is not a true or false string so setting to false")
+                completed = False
+
+            try:
+                int(priority)
+            except ValueError:
+                priority = 2
+                print("priority value has unreadable value. Setting to 2 ")
+
 
             # Remove the square brackets and split the string by commas
             if categories == "[]":
@@ -222,6 +240,7 @@ def read_tasks_from_file(file_path):
             # Strip whitespace from each item and create the list
             categories = [category.strip() for category in categories]
 
+
             task = Task(task_name, description, completed=completed, priority=int(priority), categories=categories)
             new_tasks.append(task)
 
@@ -230,8 +249,8 @@ def read_tasks_from_file(file_path):
 
 def open_folder():
     global tasks, dirwindow
-    filepath = filedialog.asksaveasfilename(initialdir="default_note_save", defaultextension=".txt",
-                                             filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+    filepath = filedialog.askopenfilename(initialdir="default_note_save", defaultextension=".txt",
+                                            filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
     todo_list_name = filepath.split("/")[-1]
     tasks = read_tasks_from_file(filepath)
     dirwindow.destroy()
@@ -354,7 +373,7 @@ def main():
                     print("No tasks to edit.")
                 else:
                     todo_list.view_tasks()
-                    choice1 = (int(input("\nwhich task would you like to edit?: "))-1)
+                    choice1 = (int(input("\nwhich task would you like to edit?: ")) - 1)
                     if choice1 not in range(len(todo_list.tasks)):
                         print("Can't find a task for that number view tasks")
                     else:
@@ -372,7 +391,7 @@ def main():
                     print("No tasks to mark.")
                 else:
                     todo_list.view_tasks()
-                    choice = (int(input("Enter the number of the task to mark as completed: "))-1)
+                    choice = (int(input("Enter the number of the task to mark as completed: ")) - 1)
                     todo_list.mark_completed(choice)
 
             elif choice == "5":
@@ -380,7 +399,7 @@ def main():
                     print("No tasks to remove.")
                 else:
                     todo_list.view_tasks()
-                    choice = (int(input("Enter the index of the task to remove: "))-1)
+                    choice = (int(input("Enter the index of the task to remove: ")) - 1)
 
                     history = [{"action": "Remove task"}, todo_list.remove_task(choice), choice]
 

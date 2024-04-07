@@ -29,6 +29,7 @@ Save/Load Tasks: Add functionality to save tasks to a file when the program exit
 to improve I want to add: 
 
 next plans
+add extra properties to files to  make updateable
 add comments and make code more understandable - next
 GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience. (probably using a markup language could be time to learn react or master sass)
 AUTOSAVE
