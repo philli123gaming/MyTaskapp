@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
 
+import classes
+from functions import *
 
 class Task:
     def __init__(self, name, description, priority=2, completed=False, categories=[]):
@@ -32,7 +34,6 @@ class Task:
             priority = "Low"
         return priority
 
-
 class Todolist:
     def __init__(self, name=None):
 
@@ -41,6 +42,7 @@ class Todolist:
 
     # Add Task: Users can add tasks to their to-do list.
     def add_task(self, task, index=0):
+
         if index:
             self.tasks.insert(index, task)
         else:
@@ -188,7 +190,6 @@ class Todolist:
         else:
             print("Time not rewinded")
 
-
 def write_tasks_to_file(tasks, todolistname = "tasks"):
     # Default file name
     file_path = filedialog.asksaveasfilename(initialdir="default_note_save",initialfile=todolistname, defaultextension=".txt",
@@ -202,9 +203,7 @@ def write_tasks_to_file(tasks, todolistname = "tasks"):
                 file.write(f"{task.name},{task.description},{task.completed},{task.priority},{task.categories}\n")
         print("Tasks saved to:", file_name)
 
-
 tasks = []
-
 
 def read_tasks_from_file(file_path):
     new_tasks = []
@@ -247,7 +246,6 @@ def read_tasks_from_file(file_path):
 
         return new_tasks
 
-
 def open_folder():
     global tasks, dirwindow
     filepath = filedialog.askopenfilename(initialdir="default_note_save", defaultextension=".txt",
@@ -256,106 +254,107 @@ def open_folder():
     tasks = read_tasks_from_file(filepath)
     dirwindow.destroy()
 
+global tasks, dirwindow, todo_list_name
 
-def main():
-    global tasks, dirwindow, todo_list_name
 
+while True:
+    print("Main Menu")
+    print("1. Load to do list")
+    print("2. Start from scratch")
+    print("0. Close app")
+
+    choice = input("Enter your choice: ")
+
+    history = []
+    if choice == "1":
+        # Creating an instance of window
+        dirwindow = Tk(screenName="here")
+
+        # Set the geometry of the window
+        dirwindow.geometry("700x300")
+
+        # Create a label
+        Label(dirwindow, text="Click the button to select your task file (it should be a csv file)",
+              font='Arial 16 bold').pack(pady=15)
+
+        # change back to just C:/ for late
+
+        # Create a button to trigger the dialog
+        button = Button(dirwindow, text="Open", command=open_folder)
+        button.pack()
+
+        dirwindow.focus_force()
+        dirwindow.lift()
+        dirwindow.mainloop()
+
+        todo_list = classes.Todolist()
+        todo_list.tasks = tasks
+        try:
+            todo_list.name = todo_list_name
+        except NameError:
+            todo_list.name = None
+
+
+    elif choice == "2":
+        todo_list = classes.Todolist()
+
+    elif choice == "0":
+        sys.exit()
+
+    else:
+        print("Invalid Choice")
+        continue
+
+    window = tk.Tk()
+    window.geometry("600x800")
+
+    list_menu = Frame(window)
+    list_menu.grid(row=0, column=0, sticky="nsew")
+
+
+    label = Label(list_menu, text="list menu")
+    label.pack(pady=20)
 
     while True:
-        print("Main Menu")
-        print("1. Load to do list")
-        print("2. Start from scratch")
-        print("0. Close app")
+        list_menu.tkraise()
+        choice = StringVar(value=None)
 
-        choice = input("Enter your choice: ")
+        def choice_maker(value):
+            if value == "1":
+                choice.set("1")
 
-        history = []
-        if choice == "1":
-            # Creating an instance of window
-            dirwindow = Tk(screenName="here")
+        print("\n1. Add Task")
+        add_button = Button(list_menu, text= "1. Add Task", command=lambda : choice_maker("1"))
+        add_button.pack()
+        print("2. View Tasks")
+        view_button = Button(list_menu, text= "1. View Tasks")
+        view_button.pack()
+        print("3. Edit tasks")
+        edit_button = Button(list_menu, text= "1. Edit Tasks")
+        edit_button.pack()
+        print("4. Mark Task as Completed / Incomplete")
+        mark_button = Button(list_menu, text= "4. Mark Task as Completed / Incomplete")
+        mark_button.pack()
+        print("5. Remove Task")
+        remove_button = Button(list_menu, text="5. Remove Task")
+        remove_button.pack()
+        print("6. Remove completed Tasks")
+        remove_c_button = Button(list_menu, text="6. Remove completed Tasks")
+        remove_c_button.pack()
+        print("7. Undo Action")
+        undo_button = Button(list_menu, text="7. Undo Action")
+        undo_button.pack()
+        print("8. Save List")
+        save_button = Button(list_menu, text="8. Save List")
+        save_button.pack()
+        print("9. Back to Main Menu")
+        back_button = Button(list_menu, text="9. Back to Main Menu")
+        back_button.pack()
+        print("0. Exit")
+        exit_button = Button(list_menu, text="X")
+        exit_button.pack()
 
-            # Set the geometry of the window
-            dirwindow.geometry("700x300")
-
-            # Create a label
-            Label(dirwindow, text="Click the button to select your task file (it should be a csv file)",
-                  font='Arial 16 bold').pack(pady=15)
-
-            # change back to just C:/ for late
-
-            # Create a button to trigger the dialog
-            button = Button(dirwindow, text="Open", command=open_folder)
-            button.pack()
-
-            dirwindow.focus_force()
-            dirwindow.lift()
-            dirwindow.mainloop()
-
-            todo_list = Todolist()
-            todo_list.tasks = tasks
-            try:
-                todo_list.name = todo_list_name
-            except NameError:
-                todo_list.name = None
-
-
-        elif choice == "2":
-            todo_list = Todolist()
-
-        elif choice == "0":
-            sys.exit()
-
-        else:
-            print("Invalid Choice")
-            continue
-
-        while True:
-            window = tk.Tk()
-            window.geometry("600x800")
-
-            list_menu = Frame(window)
-            list_menu.grid(row=0,column=0, sticky="nsew")
-            list_menu.tkraise()
-
-
-            label = Label(list_menu, text="list menu")
-            label.pack(pady=20)
-
-
-            print("\n1. Add Task")
-            add_button = Button(list_menu, text= "1. Add Task")
-            add_button.pack()
-            print("2. View Tasks")
-            view_button = Button(list_menu, text= "1. View Tasks")
-            view_button.pack()
-            print("3. Edit tasks")
-            edit_button = Button(list_menu, text= "1. Edit Tasks")
-            edit_button.pack()
-            print("4. Mark Task as Completed / Incomplete")
-            mark_button = Button(list_menu, text= "4. Mark Task as Completed / Incomplete")
-            mark_button.pack()
-            print("5. Remove Task")
-            remove_button = Button(list_menu, text="5. Remove Task")
-            remove_button.pack()
-            print("6. Remove completed Tasks")
-            remove_c_button = Button(list_menu, text="6. Remove completed Tasks")
-            remove_c_button.pack()
-            print("7. Undo Action")
-            undo_button = Button(list_menu, text="7. Undo Action")
-            undo_button.pack()
-            print("8. Save List")
-            save_button = Button(list_menu, text="8. Save List")
-            save_button.pack()
-            print("9. Back to Main Menu")
-            back_button = Button(list_menu, text="9. Back to Main Menu")
-            back_button.pack()
-            print("0. Exit")
-            exit_button = Button(list_menu, text="X")
-            exit_button.pack()
-
-            window.mainloop()
-            choice = input("Enter your choice: ")
-
+        if not choice.get():
             if choice == "1":
                 name = input("Enter task name: ")
                 if name == "":  name = "untitled"
@@ -388,7 +387,7 @@ def main():
                         else:
                             break
 
-                task = Task(name, description, priority=int(priority), categories=categories)
+                task = classes.Task(name, description, priority=int(priority), categories=categories)
 
                 todo_list.add_task(task)
                 print("Task added.")
@@ -488,6 +487,4 @@ def main():
             else:
                 print("Invalid choice. Please try again.")
 
-
-if __name__ == "__main__":
-    main()
+window.mainloop()

@@ -25,6 +25,9 @@ Task Categories: Allow users to categorize tasks (e.g., work, personal, shopping
 and implement features to filter tasks based on categories. - should be easy - done
 Save/Load Tasks: Add functionality to save tasks to a file when the program exits and load them back when the program starts again. This can be achieved using file I/O operations. - done
 (did use my background loader code for this)
+consider making options so that the code can ask if u want to use tkinker of not
+
+After spending a lot of time learning tkinter for use in my project I think I can finally start working on integrating a tkinker gui into my app im not really sure how to go about this and so ive gone about creating a branch where I will be doing all my work in
 
 to improve I want to add: 
 
