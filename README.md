@@ -37,6 +37,7 @@ more windows options so I don't have to type into console anymore
 GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience. - (probably using a markup language could be time to learn react or master sass)
 add extra properties to files to  make updateable
 add comments and make code more understandable - next
+Look up bad task reviews
 
 AUTOSAVE
 need to increase the load that gets saved as a file such as todolist name and the task app version number
