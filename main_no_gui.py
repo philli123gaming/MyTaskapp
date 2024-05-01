@@ -1,4 +1,5 @@
 import sys
+import tkinter as tk
 
 from tkinter import *
 from tkinter import filedialog
@@ -258,6 +259,8 @@ def open_folder():
 
 def main():
     global tasks, dirwindow, todo_list_name
+
+
     while True:
         print("Main Menu")
         print("1. Load to do list")
@@ -307,6 +310,16 @@ def main():
             continue
 
         while True:
+            window = tk.Tk()
+            window.geometry("600x800")
+
+            list_menu = Frame(window)
+            list_menu.grid(row=0,column=0, sticky="nsew")
+            list_menu.tkraise()
+
+
+            label = Label(list_menu, text="list menu")
+            label.pack(pady=20)
             print("\n1. Add Task")
             print("2. View Tasks")
             print("3. Edit tasks")
@@ -317,6 +330,7 @@ def main():
             print("8. Save List")
             print("9. Back to Main Menu")
             print("0. Exit")
+
             choice = input("Enter your choice: ")
 
             if choice == "1":

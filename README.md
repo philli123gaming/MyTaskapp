@@ -25,13 +25,19 @@ Task Categories: Allow users to categorize tasks (e.g., work, personal, shopping
 and implement features to filter tasks based on categories. - should be easy - done
 Save/Load Tasks: Add functionality to save tasks to a file when the program exits and load them back when the program starts again. This can be achieved using file I/O operations. - done
 (did use my background loader code for this)
+consider making options so that the code can ask if u want to use tkinker of not
+
+
+After spending a lot of time learning tkinter for use in my project I think I can finally start working on integrating a tkinker gui into my app im not really sure how to go about this and so ive gone about creating a branch where I will be doing all my work in - achieved basic gui and its functional
 
 to improve I want to add: 
 
 next plans
+more windows options so I don't have to type into console anymore
+GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience. - (probably using a markup language could be time to learn react or master sass)
 add extra properties to files to  make updateable
 add comments and make code more understandable - next
-GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience. (probably using a markup language could be time to learn react or master sass)
+
 AUTOSAVE
 need to increase the load that gets saved as a file such as todolist name and the task app version number
 I plan on learning tktinker next probably C to make my work an application and sass 
@@ -54,9 +60,3 @@ I fully want to clarify that I used gpt to get this idea with it acting an assis
 
 problems:
 
-need to only have choices in text such as 
-
-
-task input switches between str and int often
-
-need to make a default place to save notes and a tktinker use to give user choice
