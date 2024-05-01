@@ -1,19 +1,12 @@
 import sys
 import tkinter as tk
-
 from tkinter import *
 from tkinter import filedialog
-
-import classes
-from functions import *
-
-from tkinter import ttk
 import ttkbootstrap as ttk
 
-def write_tasks_to_file(tasks, todolistname = "tasks"):
+def write_tasks_to_file(tasks):
     # Default file name
-    file_path = filedialog.asksaveasfilename(initialdir="default_note_save",initialfile=todolistname, defaultextension=".txt",
-                                             filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+    file_path = open_dialog("save")
     print("File path selected:", file_path)
     if file_path:
         # Extract the file name from the file path
@@ -23,8 +16,9 @@ def write_tasks_to_file(tasks, todolistname = "tasks"):
                 file.write(f"{task.name},{task.description},{task.completed},{task.priority},{task.categories}\n")
         print("Tasks saved to:", file_name)
 
-def read_tasks_from_file(file_path):
+def read_tasks_from_file():
     new_tasks = []
+    file_path = open_dialog("open")
     with open(file_path, 'r') as file:
         for line in file:
             task_data = line.strip().split(',')
@@ -62,11 +56,18 @@ def read_tasks_from_file(file_path):
 
         return new_tasks
 
+def open_dialog(operation):
+    if operation == "open":
+        file_path = filedialog.askopenfilename(initialdir="default_note_save", defaultextension=".txt",
+                                              filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+    elif operation == "save":
+        file_path = filedialog.asksaveasfilename(initialdir="default_note_save", initialfile="Untitled",
+                                                 defaultextension=".txt",
+                                                 filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+    return file_path
 
-def open_folder():
-    global tasks
-    filepath = filedialog.askopenfilename(initialdir="default_note_save", defaultextension=".txt",
-                                            filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+
+
     todo_list_name = filepath.split("/")[-1]
     todolist.tasks = read_tasks_from_file(filepath)
     list_menu.tkraise()
@@ -139,7 +140,6 @@ class Todolist:
                         continue
                     else:
                         break
-
             task = Task(name, description, priority=int(priority), categories=categories)
 
         if index:
@@ -369,7 +369,7 @@ Main_menu = Frame(window)
 Main_menu.grid(row=0, column=0, sticky="nsew")
 Page_Title = Label(Main_menu, text="Main Menu", font=24)
 Page_Title.pack()
-Load_list_button = Button(Main_menu, text="1. Load to do list", command=open_folder)
+Load_list_button = Button(Main_menu, text="1. Load to do list", command=lambda : [read_tasks_from_file(), list_menu.tkraise()])
 Load_list_button.pack()
 Make_list_button = Button(Main_menu, text="2. Start from scratch", command=lambda: [list_menu.tkraise(), create_new_list()])
 Make_list_button.pack()
