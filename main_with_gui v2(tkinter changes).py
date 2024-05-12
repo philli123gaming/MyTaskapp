@@ -81,6 +81,8 @@ class Task:
         self.priority = priority
         self.categories = categories
 
+        self.master = None
+        self.task_frame = None
 
     def __repr__(self):
         if self.priority == 1:
@@ -105,7 +107,7 @@ class Task:
     def to_frame(self, master):
         self.master = master
         self.task_frame = Frame(master)
-        self.task_frame.pack()
+        self.task_frame.pack(padx=20,pady=5)
 
         self.completed_var = BooleanVar(master)
         self.completed_var.set(self.completed)
@@ -128,6 +130,12 @@ class Task:
         self.description_label.pack_forget()
         pass
 
+    def clear_task(self):
+        if self.task_frame:
+            self.task_frame.pack_forget()
+        else:
+            pass
+
     def display_task_details(self):
         # Display more details about the current task (you can implement this as needed)
         if not self.description_label.winfo_ismapped():
@@ -145,12 +153,13 @@ class Task:
 
 class Todolist:
     def __init__(self, name=None):
-        self.tasks = [Task("TASK 1", "task 1 desc", 2, False, [])]
+        self.tasks = [Task("TASK 1", "task 1 desc", 2, False, []),
+                      Task("TASK 2", "task 2 desc", 3, False, ["sport"])]
         self.name = name
 
     def stop_widgets(self):
         for task in self.tasks:
-            task.task_frame.destroy()
+            task.clear_task()
 
     # Add Task: Users can add tasks to their to-do list.
     def add_task(self, task=None, index=None):
@@ -186,30 +195,32 @@ class Todolist:
 
     # View Tasks: Users can view all tasks currently on their to-do list.
     def view_tasks(self):
-        def view_tasks_fr(filter=None, None_label = Label(view_button, text="There are no tasks to vie")):
-            selected_tasks = []
+        def nuke_labels():
+            for widget in view_window.winfo_children():
+                if isinstance(widget, tk.Label) and widget.cget(
+                        "text") != "Filter":  # Change "Label 2" to the text of the label you want to keep
+                    widget.destroy()
+        def update_view_tasks(filter=None):
             self.stop_widgets()
-            if self.tasks:
-                if filter:
-                    selected_tasks = [task for task in self.tasks if filter in task.categories]
-                    if not selected_tasks:
-                        None_label.pack_forget()
-                        None_label.pack()
-
-
-                for i, task in enumerate((selected_tasks if selected_tasks else self.tasks), 1):
+            if filter:
+                if not [task for task in self.tasks if filter in task.categories]:
+                    nuke_labels()
+                    None_label = Label(view_window, text="There are no tasks to view WITH THAT FILTER")
+                    None_label.pack()
+                    self.stop_widgets()
+                else:
+                    for task in (task for task in self.tasks if filter in task.categories):
+                        print(task)
+                        task.to_frame(view_window)
+                    nuke_labels()
+            else:
+                nuke_labels()
+                for task in (self.tasks):
                     print(task)
                     task.to_frame(view_window)
 
-            def display_task_details(self):
-                # Display more details about the current task (you can implement this as needed)
-                if not self.description_label.winfo_ismapped():
-                    self.description_label.pack(in_=self.master, before=self.prev_button)
-                else:
-                    self.description_label.pack_forget()
-                pass
         view_window = tk.Tk()
-        back_button = Button(view_window,text="Back",command=view_window.destroy)
+        back_button = Button(view_window,text="Back")
         back_button.pack()
         if len(self.tasks) < 1:
             print("There are no tasks to view")
@@ -222,17 +233,12 @@ class Todolist:
             filter_entry = Entry(view_window,textvariable=filter)
             filter_entry.pack()
             #filter_entry.bind("<Key>", lambda event: print("text typed"))
-            filter_entry.bind("<Key>", lambda event: view_tasks_fr(filter))
-            view_tasks_fr()
+            filter_entry.bind("<KeyRelease>", lambda event: update_view_tasks(filter_entry.get()))
+            update_view_tasks()
             view_window.mainloop()
 
-
-
-
-
-    # Mark Task as Completed: Users can mark tasks as completed.
+    # Mark Task as Completed: Users can mark tasks as completed. Redundant
     def mark_completed(self):
-
         if not self.tasks:
             print("No tasks to mark.")
         else:
@@ -266,7 +272,6 @@ class Todolist:
 
     def remove_completed_tasks(self):
         global history
-        updated_tasks = []
         removed_tasks = []
         if not self.tasks:
             print("No tasks to remove.")
@@ -276,13 +281,11 @@ class Todolist:
                 if task.completed:
                     removed_tasks.append(task)
                 else:
-                    updated_tasks.append(task)
-            self.tasks = updated_tasks
+                    self.tasks.remove(task)
             history = [{"action": "Remove tasks"}, removed_tasks]
         print("Completed tasks have been removed")
 
     def edit_task(self):
-
         if not self.tasks:
             print("No tasks to edit.")
         else:
@@ -408,99 +411,14 @@ class Todolist:
         if response.lower().strip() == "yes":
             write_tasks_to_file(self.tasks, name)
 
-class App:
-    def __init__(self,todolist = Todolist()):
-        pass
 
-    def view_tasks(self):
-        self.master = tk.Tk()
-        self.master.title(f"To-Do List name: {(todolist.name if todolist.name else 'untitled')}")
-        # Initialize current task index
-        self.current_task_index = 0
-
-        # Create a frame to hold task information
-        self.task_frame = tk.Frame(self.master)
-        self.task_frame.pack()
-
-        # Create a Checkbutton for task completion status
-        self.completed_var = tk.BooleanVar()
-        self.completed_var.set(todolist.tasks[self.current_task_index].completed)
-        self.completed_check = tk.Checkbutton(self.task_frame, variable=self.completed_var,
-                                              command=self.update_completed_status)
-        self.completed_check.grid(row=0, column=0)
-
-        # Create a button to display task description
-        self.name_button = tk.Button(self.task_frame, text=todolist.tasks[self.current_task_index].name, borderwidth=0,
-                                     command=self.display_task_details)
-        self.name_button.grid(row=0, column=1)
-
-        # Create a label to display task priority
-        self.priority_label = tk.Label(self.task_frame, text="")
-        self.priority_label.grid(row=0, column=2)
-
-        # Create a label before the buttons
-        self.description_label = tk.Label(self.master, text=todolist.tasks[self.current_task_index].description)
-
-        # Create navigation buttons
-        self.prev_button = tk.Button(self.master, text="Previous Task", command=self.prev_task)
-        self.prev_button.pack(side=tk.LEFT)
-        self.next_button = tk.Button(self.master, text="Next Task", command=self.next_task)
-        self.next_button.pack(side=tk.RIGHT)
-
-        self.description_label.pack(in_=self.master, before=self.prev_button)
-        self.description_label.pack_forget()
-        # Display initial task
-        self.display_task()
-        self.master.mainloop()
-    def display_task(self):
-        # Get the current task
-        current_task = todolist.tasks[self.current_task_index]
-
-        # Update Checkbutton status
-        self.completed_var.set(current_task.completed)
-
-        # Update button text with task description
-        self.name_button.config(text=current_task.name)
-
-        # Update label with task priority
-        self.priority_label.config(text=f"Priority: {current_task.priority}")
-
-        self.description_label.config(text=current_task.description)
-
-    def update_completed_status(self):
-        # Update the completion status of the current task
-        todolist.tasks[self.current_task_index].completed = self.completed_var.get()
-
-    def prev_task(self):
-        # Move to the previous task
-        if self.current_task_index > 0:
-            self.current_task_index -= 1
-            self.display_task()
-            self.description_label.pack_forget()
-
-    def next_task(self):
-        # Move to the next task
-        if self.current_task_index < len(self.tasks) - 1:
-            self.current_task_index += 1
-            self.display_task()
-            self.description_label.pack_forget()
-
-    def display_task_details(self):
-        # Display more details about the current task (you can implement this as needed)
-        if not self.description_label.winfo_ismapped():
-            self.description_label.pack(in_=self.master,before=self.prev_button)
-        else:
-            self.description_label.pack_forget()
-        pass
-
-# Create and run the Tkinter application
 
 
 
 
 todolist = Todolist()
 history = []
-app = App(todolist)
+
 
 def create_new_list():
     global todolist, history
