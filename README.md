@@ -27,12 +27,15 @@ Save/Load Tasks: Add functionality to save tasks to a file when the program exit
 (did use my background loader code for this)
 consider making options so that the code can ask if u want to use tkinker of not
 
-
-After spending a lot of time learning tkinter for use in my project I think I can finally start working on integrating a tkinker gui into my app im not really sure how to go about this and so ive gone about creating a branch where I will be doing all my work in - achieved basic gui and its functional
+After spending a lot of time learning tkinter for use in my project I think I can finally start working on integrating a
+tkinker gui into my app im not really sure how to go about this and so ive gone about creating a branch where I will be doing all my work in - achieved basic gui and its functional
 
 to improve I want to add: 
 
 next plans
+view menu needs to be a frame not a separate window and also needs to wipe the tasks after typing in filed
+filter needs to be packed before if block
+add needs work criteria for making a task
 more windows options so I don't have to type into console anymore
 GUI Interface: Develop a graphical user interface (GUI) using libraries like Tkinter or PyQt to provide a more user-friendly experience. - (probably using a markup language could be time to learn react or master sass)
 add extra properties to files to  make updateable
